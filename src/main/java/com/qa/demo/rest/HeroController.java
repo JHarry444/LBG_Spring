@@ -3,9 +3,11 @@ package com.qa.demo.rest;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,9 +31,10 @@ public class HeroController {
 	}
 
 	@PostMapping("/create")
-	public String createHero(@RequestBody Hero newHero) {
+	public Hero createHero(@RequestBody Hero newHero) {
 		this.heroes.add(newHero);
-		return heroes.toString();
+		// returns the last element in the list
+		return this.heroes.get(this.heroes.size() - 1);
 	}
 
 	@GetMapping("/get")
@@ -43,5 +46,15 @@ public class HeroController {
 	@GetMapping("/get/{id}")
 	public Hero getHero(@PathVariable int id) {
 		return this.heroes.get(id);
+	}
+
+	@PutMapping("/update/{id}")
+	public Hero updateHero(@PathVariable int id, @RequestBody Hero newHero) {
+		return this.heroes.set(id, newHero);
+	}
+
+	@DeleteMapping("/remove/{id}")
+	public Hero remove(@PathVariable int id) {
+		return this.heroes.remove(id);
 	}
 }
