@@ -3,6 +3,8 @@ package com.qa.demo.rest;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,10 +33,12 @@ public class HeroController {
 	}
 
 	@PostMapping("/create")
-	public Hero createHero(@RequestBody Hero newHero) {
+	public ResponseEntity<Hero> createHero(@RequestBody Hero newHero) {
 		this.heroes.add(newHero);
 		// returns the last element in the list
-		return this.heroes.get(this.heroes.size() - 1);
+		Hero body = this.heroes.get(this.heroes.size() - 1);
+
+		return new ResponseEntity<Hero>(body, HttpStatus.CREATED);
 	}
 
 	@GetMapping("/get")
@@ -44,8 +48,13 @@ public class HeroController {
 
 	// 'id' -> index (for now)
 	@GetMapping("/get/{id}")
-	public Hero getHero(@PathVariable int id) {
-		return this.heroes.get(id);
+	public ResponseEntity<Hero> getHero(@PathVariable int id) {
+		if (id < 0 || id >= this.heroes.size()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		Hero found = this.heroes.get(id);
+
+		return ResponseEntity.ok(found);
 	}
 
 	@PutMapping("/update/{id}")
