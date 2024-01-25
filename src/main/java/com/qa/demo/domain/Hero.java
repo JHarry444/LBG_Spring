@@ -1,10 +1,36 @@
 package com.qa.demo.domain;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+//@Table controls the name of matching table
+@Entity
 public class Hero {
+
+	@Id // primary key
+	@GeneratedValue(strategy = GenerationType.IDENTITY) // auto_increment
+	private Integer id;
 
 	private String name;
 
-	private String powers;
+	private String superPowers;
+
+	// NEED
+	// Default constructor
+	public Hero() {
+		super();
+	}
+
+//	GETTERS and SETTERS
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
 	public String getName() {
 		return name;
@@ -14,17 +40,12 @@ public class Hero {
 		this.name = name;
 	}
 
-	public String getPowers() {
-		return powers;
+	public String getSuperPowers() {
+		return superPowers;
 	}
 
-	public void setPowers(String powers) {
-		this.powers = powers;
-	}
-
-	@Override
-	public String toString() {
-		return "Hero [name=" + name + ", powers=" + powers + "]";
+	public void setSuperPowers(String superPowers) {
+		this.superPowers = superPowers;
 	}
 
 }
