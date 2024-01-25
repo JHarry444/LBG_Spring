@@ -1,9 +1,7 @@
 package com.qa.demo.rest;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,12 +12,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.qa.demo.domain.Hero;
+import com.qa.demo.services.HeroService;
 
 // Tells spring this class is a controller
 @RestController
 public class HeroController {
 
-	private List<Hero> heroes = new ArrayList<>();
+//	@Autowired
+//	private HeroService service;
+
+	private HeroService service;
+
+	public HeroController(HeroService service) {
+		super();
+		this.service = service;
+	}
 
 	// tells spring to listen for a GET request at /hello
 	@GetMapping("/hello")
@@ -34,36 +41,27 @@ public class HeroController {
 
 	@PostMapping("/create")
 	public ResponseEntity<Hero> createHero(@RequestBody Hero newHero) {
-		this.heroes.add(newHero);
-		// returns the last element in the list
-		Hero body = this.heroes.get(this.heroes.size() - 1);
-
-		return new ResponseEntity<Hero>(body, HttpStatus.CREATED);
+		return this.service.createHero(newHero);
 	}
 
 	@GetMapping("/get")
 	public List<Hero> getHeroes() {
-		return heroes;
+		return this.service.getHeroes();
 	}
 
 	// 'id' -> index (for now)
 	@GetMapping("/get/{id}")
 	public ResponseEntity<Hero> getHero(@PathVariable int id) {
-		if (id < 0 || id >= this.heroes.size()) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-		Hero found = this.heroes.get(id);
-
-		return ResponseEntity.ok(found);
+		return this.service.getHero(id);
 	}
 
 	@PutMapping("/update/{id}")
 	public Hero updateHero(@PathVariable int id, @RequestBody Hero newHero) {
-		return this.heroes.set(id, newHero);
+		return this.service.updateHero(id, newHero);
 	}
 
 	@DeleteMapping("/remove/{id}")
 	public Hero remove(@PathVariable int id) {
-		return this.heroes.remove(id);
+		return this.service.remove(id);
 	}
 }
