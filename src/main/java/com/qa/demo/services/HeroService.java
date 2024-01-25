@@ -1,46 +1,77 @@
 package com.qa.demo.services;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.qa.demo.domain.Hero;
+import com.qa.demo.repos.HeroRepo;
 
 // Tells spring this class is a service
 @Service
 public class HeroService {
 
-	private List<Hero> heroes = new ArrayList<>();
+	private HeroRepo repo;
+
+	public HeroService(HeroRepo repo) {
+		super();
+		this.repo = repo;
+	}
 
 	public ResponseEntity<Hero> createHero(Hero newHero) {
-		this.heroes.add(newHero);
-		// returns the last element in the list
-		Hero body = this.heroes.get(this.heroes.size() - 1);
-
-		return new ResponseEntity<Hero>(body, HttpStatus.CREATED);
+		Hero created = this.repo.save(newHero);
+		return new ResponseEntity<Hero>(created, HttpStatus.CREATED);
 	}
 
 	public List<Hero> getHeroes() {
-		return heroes;
+		return this.repo.findAll();
 	}
 
 	public ResponseEntity<Hero> getHero(int id) {
-		if (id < 0 || id >= this.heroes.size()) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		// returns a box that might have a hero in it
+		Optional<Hero> found = this.repo.findById(id);
+
+		if (found.isEmpty()) { // checks if it's found a hero
+			return new ResponseEntity<Hero>(HttpStatus.NOT_FOUND);
 		}
-		Hero found = this.heroes.get(id);
 
-		return ResponseEntity.ok(found);
+		// attempts to pull the contents out of the box
+		Hero body = found.get();
+
+		return ResponseEntity.ok(body);
+
 	}
 
-	public Hero updateHero(int id, Hero newHero) {
-		return this.heroes.set(id, newHero);
+	public ResponseEntity<Hero> updateHero(int id, Hero newHero) {
+		// returns a box that might have a hero in it
+		Optional<Hero> found = this.repo.findById(id);
+
+		if (found.isEmpty()) { // checks if it's found a hero
+			return new ResponseEntity<Hero>(HttpStatus.NOT_FOUND);
+		}
+
+		// attempts to pull the contents out of the box
+		Hero existing = found.get();
+
+		if (newHero.getName() != null) {
+			existing.setName(newHero.getName());
+		}
+
+		if (newHero.getSuperPowers() != null) {
+			existing.setSuperPowers(newHero.getSuperPowers());
+		}
+
+		Hero updated = this.repo.save(existing);
+
+		return ResponseEntity.ok(updated);
 	}
 
-	public Hero remove(int id) {
-		return this.heroes.remove(id);
+	public boolean remove(int id) {
+		this.repo.deleteById(id);
+
+		return !this.repo.existsById(id);
 	}
 }
