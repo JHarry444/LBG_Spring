@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.qa.demo.domain.Hero;
 
-// Tells spring this class is a controller
+// Tells spring this class is a service
 @Service
 public class HeroService {
 
