@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
 //@Table controls the name of matching table
 @Entity
@@ -16,6 +17,9 @@ public class Hero {
 	private String name;
 
 	private String superPowers;
+
+	@ManyToOne
+	private City city;
 
 	// NEED
 	// Default constructor
@@ -46,6 +50,14 @@ public class Hero {
 
 	public void setSuperPowers(String superPowers) {
 		this.superPowers = superPowers;
+	}
+
+	public City getCity() {
+		return city;
+	}
+
+	public void setCity(City city) {
+		this.city = city;
 	}
 
 }
