@@ -1,5 +1,7 @@
 package com.qa.demo.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,6 +20,9 @@ public class Hero {
 
 	private String superPowers;
 
+	// tells the JSON converter to IGNORE thi
+	// field in the JSON string
+	@JsonBackReference
 	@ManyToOne
 	private City city;
 
