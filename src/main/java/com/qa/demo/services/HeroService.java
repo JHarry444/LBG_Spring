@@ -42,6 +42,8 @@ public class HeroService {
 			dto.setCityName(hero.getCity().getName());
 
 			dtos.add(dto);
+
+//			dtos.add(new HeroDTO(hero)); can also use the constructor I created earlier
 		}
 
 		return dtos;
