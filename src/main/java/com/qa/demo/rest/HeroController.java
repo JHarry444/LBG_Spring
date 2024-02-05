@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.qa.demo.domain.Hero;
+import com.qa.demo.dtos.HeroDTO;
 import com.qa.demo.services.HeroService;
 
 // Tells spring this class is a controller
@@ -47,13 +48,13 @@ public class HeroController {
 	}
 
 	@GetMapping("/get")
-	public List<Hero> getHeroes() {
+	public List<HeroDTO> getHeroes() {
 		return this.service.getHeroes();
 	}
 
 	// 'id' -> index (for now)
 	@GetMapping("/get/{id}")
-	public ResponseEntity<Hero> getHero(@PathVariable int id) {
+	public ResponseEntity<HeroDTO> getHero(@PathVariable int id) {
 		return this.service.getHero(id);
 	}
 
