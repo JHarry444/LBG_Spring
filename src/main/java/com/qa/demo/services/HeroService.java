@@ -1,5 +1,6 @@
 package com.qa.demo.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.qa.demo.domain.Hero;
+import com.qa.demo.dtos.HeroDTO;
 import com.qa.demo.repos.HeroRepo;
 
 // Tells spring this class is a service
@@ -26,22 +28,46 @@ public class HeroService {
 		return new ResponseEntity<Hero>(created, HttpStatus.CREATED);
 	}
 
-	public List<Hero> getHeroes() {
-		return this.repo.findAll();
+	public List<HeroDTO> getHeroes() {
+		List<Hero> heroes = this.repo.findAll();
+
+		List<HeroDTO> dtos = new ArrayList<>();
+
+		for (Hero hero : heroes) {
+			HeroDTO dto = new HeroDTO();
+
+			dto.setId(hero.getId());
+			dto.setName(hero.getName());
+			dto.setPowers(hero.getSuperPowers());
+			dto.setCityName(hero.getCity().getName());
+
+			dtos.add(dto);
+
+//			dtos.add(new HeroDTO(hero)); can also use the constructor I created earlier
+		}
+
+		return dtos;
 	}
 
-	public ResponseEntity<Hero> getHero(int id) {
+	public ResponseEntity<HeroDTO> getHero(int id) {
 		// returns a box that might have a hero in it
 		Optional<Hero> found = this.repo.findById(id);
 
 		if (found.isEmpty()) { // checks if it's found a hero
-			return new ResponseEntity<Hero>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<HeroDTO>(HttpStatus.NOT_FOUND);
 		}
 
 		// attempts to pull the contents out of the box
 		Hero body = found.get();
 
-		return ResponseEntity.ok(body);
+		HeroDTO dto = new HeroDTO();
+
+		dto.setId(body.getId());
+		dto.setName(body.getName());
+		dto.setPowers(body.getSuperPowers());
+		dto.setCityName(body.getCity().getName());
+
+		return ResponseEntity.ok(dto);
 
 	}
 
